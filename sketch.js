@@ -3,24 +3,30 @@ let video;
 let predictions = [];
 let modelLoaded = false;
 
+let circle1;
+let circle2;
 
 function setup() {
   createCanvas(640, 480);
   video = createCapture(VIDEO);
   video.size(width, height);
 
+  // add handpose model
   handpose = ml5.handpose(video, modelReady);
-
   // This sets up an event that fills the global variable "predictions"
   // with an array every time new hand poses are detected
   handpose.on("predict", results => {
     predictions = results;
     console.log(predictions);
   });
-
   // Hide the video element, and just show the canvas
   video.hide();
 
+  // Circles setup
+
+  circ1 = new Circle();
+  circ2 = new Circle();
+  ellipseMode(CENTER);
 
 }
 
@@ -37,24 +43,21 @@ function draw() {
     // We can call both functions to draw all keypoints and the skeletons
     // drawKeypoints();
     drawFingers();
-
-
     
     // DOTS FOR THE GAME
-
-    // RADNOM CIRCLE
-    /*for (var i = 0; i < 200; i++) {
-      ellipse(random(0, width), random(0, height), 5);
-    }*/
-
-    let x = random(640);
-    let y = random(480);
-
-    fill(255, 0, 0);
-    noStroke();
-    ellipse(100, 100, 50, 50);
-    /*ellipse(x, y, 10, 10);
-    ellipse(x, y, 10, 10);*/
+    circ1.display();
+    circ2.display();
+    
+    // for collision detection, calc distance between two ellipses using radius
+    // if distance is less than sum of radius, they are overlapping
+    // first calc distance between two circles
+    var d = dist(circ1.x, circ1.y, circ2.x, circ2.y);
+    // now see if distance between two is less than sum of two radius'
+    if (d < circ1.r + circ2.r) {
+      // if they are overlapping, change color
+      circ1.changeColor();
+      circ2.changeColor();
+    }
 
   }
 }
@@ -89,4 +92,20 @@ function drawFingers() {
     circle(index4[0], index4[1], 10);// index4[2]);
   }
   pop();
+}
+
+function Circle() {
+  this.x = random(0, 480);
+  this.y = random(0, 480);
+  this.r = 25;
+  this.col = color('red');
+  
+  this.display = function() {
+    ellipse(this.x, this.y, this.r*2);
+    fill(this.col);
+  }
+  
+  this.changeColor = function() {
+    this.col = color('red');
+  }
 }
