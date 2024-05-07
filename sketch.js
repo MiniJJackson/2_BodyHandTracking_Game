@@ -22,8 +22,8 @@ function setup() {
   // Hide the video element, and just show the canvas
   video.hide();
 
+  
   // Circles setup
-
   circ1 = new Circle();
   circ2 = new Circle();
   ellipseMode(CENTER);
@@ -32,12 +32,15 @@ function setup() {
 
 function modelReady() {
   console.log("Model ready!");
-  modelLoaded = true;
+
   select('#status').html('Model Loaded');
+
+  
+  modelLoaded = true;
 }
 
 function draw() {
-  frameRate(30);
+  frameRate(20);
   if (modelLoaded) {
     image(video, 0, 0, width, height);
     // We can call both functions to draw all keypoints and the skeletons
@@ -51,12 +54,22 @@ function draw() {
     // for collision detection, calc distance between two ellipses using radius
     // if distance is less than sum of radius, they are overlapping
     // first calc distance between two circles
-    var d = dist(circ1.x, circ1.y, circ2.x, circ2.y);
+    /*var d = dist(circ1.x, circ1.y, circ2.x, circ2.y);
     // now see if distance between two is less than sum of two radius'
     if (d < circ1.r + circ2.r) {
       // if they are overlapping, change color
       circ1.changeColor();
       circ2.changeColor();
+    }*/
+
+    let fingertipX = predictions[0].annotations.indexFinger[3][0];
+    let fingertipY = predictions[0].annotations.indexFinger[3][1];
+
+    // lus door loop voor circle array
+    let distanceFingerCircle1 = dist(fingertipX, fingertipY, circ1.x, circ1.y);
+
+    if (distanceFingerCircle1 < circ1.r) {
+      circ1.changeColor();
     }
 
   }
@@ -106,6 +119,6 @@ function Circle() {
   }
   
   this.changeColor = function() {
-    this.col = color('red');
+    this.col = color('green');
   }
 }
