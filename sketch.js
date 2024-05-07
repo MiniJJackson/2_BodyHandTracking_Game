@@ -20,11 +20,14 @@ function setup() {
 
   // Hide the video element, and just show the canvas
   video.hide();
+
+
 }
 
 function modelReady() {
   console.log("Model ready!");
   modelLoaded = true;
+  select('#status').html('Model Loaded');
 }
 
 function draw() {
@@ -34,6 +37,24 @@ function draw() {
     // We can call both functions to draw all keypoints and the skeletons
     // drawKeypoints();
     drawFingers();
+
+
+    
+    // DOTS FOR THE GAME
+
+    // RADNOM CIRCLE
+    /*for (var i = 0; i < 200; i++) {
+      ellipse(random(0, width), random(0, height), 5);
+    }*/
+
+    let x = random(640);
+    let y = random(480);
+
+    fill(255, 0, 0);
+    noStroke();
+    ellipse(100, 100, 50, 50);
+    /*ellipse(x, y, 10, 10);
+    ellipse(x, y, 10, 10);*/
 
   }
 }
