@@ -17,13 +17,13 @@ function setup() {
   // with an array every time new hand poses are detected
   handpose.on("predict", results => {
     predictions = results;
-    console.log(predictions);
+    //console.log(predictions);
   });
   // Hide the video element, and just show the canvas
-  video.hide();
-
   
+
   // Circles setup
+
   circ1 = new Circle();
   circ2 = new Circle();
   ellipseMode(CENTER);
@@ -37,24 +37,26 @@ function modelReady() {
 
   
   modelLoaded = true;
+  video.hide();
 }
 
 function draw() {
-  frameRate(20);
-  if (modelLoaded) {
+  frameRate(25);
+  if (modelLoaded && predictions.length > 0) {
+
+    frameRate(25);
     image(video, 0, 0, width, height);
-    // We can call both functions to draw all keypoints and the skeletons
-    // drawKeypoints();
     drawFingers();
     
     // DOTS FOR THE GAME
     circ1.display();
     circ2.display();
     
+    /*
     // for collision detection, calc distance between two ellipses using radius
     // if distance is less than sum of radius, they are overlapping
     // first calc distance between two circles
-    /*var d = dist(circ1.x, circ1.y, circ2.x, circ2.y);
+    var d = dist(circ1.x, circ1.y, circ2.x, circ2.y);
     // now see if distance between two is less than sum of two radius'
     if (d < circ1.r + circ2.r) {
       // if they are overlapping, change color
@@ -62,31 +64,24 @@ function draw() {
       circ2.changeColor();
     }*/
 
+
+
     let fingertipX = predictions[0].annotations.indexFinger[3][0];
     let fingertipY = predictions[0].annotations.indexFinger[3][1];
 
     // lus door loop voor circle array
     let distanceFingerCircle1 = dist(fingertipX, fingertipY, circ1.x, circ1.y);
-
     if (distanceFingerCircle1 < circ1.r) {
       circ1.changeColor();
     }
 
-  }
-}
-
-// A function to draw ellipses over the detected keypoints
-function drawKeypoints() {
-  for (let i = 0; i < predictions.length; i += 1) {
-    const prediction = predictions[i];
-    for (let j = 0; j < prediction.landmarks.length; j += 1) {
-      const keypoint = prediction.landmarks[j];
-      fill(0, 255, 0);
-      noStroke();
-      ellipse(keypoint[0], keypoint[1], 10, 10);
+    let distanceFingerCircle2 = dist(fingertipX, fingertipY, circ2.x, circ2.y);
+    if (distanceFingerCircle2 < circ2.r) {
+      circ2.changeColor();
     }
   }
 }
+
 
 function drawFingers() {
   console.log(predictions);
